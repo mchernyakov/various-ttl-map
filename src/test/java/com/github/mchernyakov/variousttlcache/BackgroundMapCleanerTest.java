@@ -8,12 +8,13 @@ import org.junit.Test;
 import java.util.Random;
 
 public class BackgroundMapCleanerTest {
-    private VariousTtlMapImpl<String, String> mapClassic;
+
+    private VariousTtlCacheImpl<String, String> mapClassic;
     private BackgroundMapCleaner<String, String> mapCleaner;
 
     @Before
     public void setUp() throws Exception {
-        mapClassic = VariousTtlMapImpl.Builder.newBuilder()
+        mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
                 .setClearPoolSize(1)
                 .setNumCheck(20)
@@ -53,8 +54,7 @@ public class BackgroundMapCleanerTest {
 
     @Test
     public void basicTest2() throws Exception {
-        // спецмапа для бОльшего количество ключей за одну проверку (мапа не успевает почиститься)
-        VariousTtlMapImpl<String, String> mapClassic = VariousTtlMapImpl.Builder.newBuilder()
+        VariousTtlCacheImpl<String, String> mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
                 .setClearPoolSize(2)
                 .setNumCheck(250)
@@ -71,7 +71,6 @@ public class BackgroundMapCleanerTest {
         Thread.sleep(4000);
         System.out.println(mapClassic.size());
 
-        // примитивная проверка, что кол-во записей в мапе будет меньше половины попыток (по факту их от 2к до 3к)
         Assert.assertTrue(mapClassic.size() < attempts / 2);
         mapClassic.shutdown();
     }

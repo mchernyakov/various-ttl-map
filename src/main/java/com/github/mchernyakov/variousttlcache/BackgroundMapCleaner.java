@@ -32,14 +32,14 @@ class BackgroundMapCleaner<K, V> {
     private static final int RED_LINE_PERCENT = 90;
 
     private final ScheduledExecutorService executorService;
-    private final VariousTtlMapImpl<K, V> map;
+    private final VariousTtlCacheImpl<K, V> map;
 
     private final long delayTime;
     private final int poolSize;
     private final int numKeyCheck;
     private final int percentWaterMark;
 
-    private BackgroundMapCleaner(VariousTtlMapImpl<K, V> variousTtlMap, Builder<K, V> builder) {
+    private BackgroundMapCleaner(VariousTtlCacheImpl<K, V> variousTtlMap, Builder<K, V> builder) {
         Preconditions.checkArgument(builder.poolSize > 0);
         Preconditions.checkArgument(builder.numKeyCheck > 0);
         Preconditions.checkArgument(builder.delayTime > 0);
@@ -176,7 +176,7 @@ class BackgroundMapCleaner<K, V> {
 
         @SuppressWarnings("unchecked")
         public <K1 extends K, V1 extends V>
-        BackgroundMapCleaner<K1, V1> build(@Nonnull VariousTtlMapImpl<K1, V1> map) {
+        BackgroundMapCleaner<K1, V1> build(@Nonnull VariousTtlCacheImpl<K1, V1> map) {
             Preconditions.checkNotNull(map);
             Builder<K1, V1> self = (Builder<K1, V1>) this;
             return new BackgroundMapCleaner<>(map, self);

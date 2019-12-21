@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VariousTtlMapImplTest {
+public class VariousTtlCacheImplTest {
 
     @Test(expected = Exception.class)
     public void conditionTest() throws Exception {

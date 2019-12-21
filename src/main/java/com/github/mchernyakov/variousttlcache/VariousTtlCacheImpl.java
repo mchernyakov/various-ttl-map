@@ -2,22 +2,27 @@ package com.github.mchernyakov.variousttlcache;
 
 import com.google.common.base.Preconditions;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Мапа с разными ttl на ключи.
+ * The Cache with various ttl for keys.
  * <p>
- * Содержит 3 мапы: ключ+значение, ключ+timestamp (когда записали), ключ+ttl.
- * 2 варианта очистки: пассивный через запрос {@link VariousTtlMapImpl#get(Object)}
- * и активный через {@link BackgroundMapCleaner}.
+ * This implementation contains 3 maps :
+ * 1) store (key + value) {@link VariousTtlCacheImpl#store},
+ * 2) map for timestamps (key + timestamps) {@link VariousTtlCacheImpl#timestamps},
+ * 3) map for ttl (key + ttl) {@link VariousTtlCacheImpl#ttlMap}.
  * <p>
- * Более подробное описание очистки в {@link BackgroundMapCleaner}
+ * This implementation has two variants of cleaning:
+ * 1) passive via {@link VariousTtlCacheImpl#get(K)},
+ * 2) active via {@link BackgroundMapCleaner}.
  *
- * @param <K> ключ
- * @param <V> значение
+ * @param <K> key
+ * @param <V> value
  */
-public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
+public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     private final ConcurrentHashMap<K, V> store;
     private final ConcurrentHashMap<K, Long> timestamps;
@@ -27,7 +32,7 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     private final long defaultTtl;
     private final TimeUnit timeUnit = TimeUnit.SECONDS;
 
-    private VariousTtlMapImpl(Builder<K, V> builder) {
+    private VariousTtlCacheImpl(Builder<K, V> builder) {
         Preconditions.checkArgument(builder.defaultTtl > 0);
 
         defaultTtl = timeUnit.toNanos(builder.defaultTtl);
@@ -47,6 +52,7 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     }
 
     @Override
+    @Nullable
     public V get(K key) {
         V value = this.store.get(key);
 
@@ -59,14 +65,14 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(@Nonnull K key, V value) {
         timestamps.put(key, System.nanoTime());
         ttlMap.put(key, defaultTtl);
         return store.put(key, value);
     }
 
     @Override
-    public V put(K key, V value, long ttl) {
+    public V put(@Nonnull K key, V value, long ttl) {
         timestamps.put(key, System.nanoTime());
         ttlMap.put(key, timeUnit.toNanos(ttl));
         return store.put(key, value);
@@ -78,7 +84,7 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     }
 
     @Override
-    public V remove(K key) {
+    public V remove(@Nonnull K key) {
         timestamps.remove(key);
         ttlMap.remove(key);
         return store.remove(key);
@@ -91,7 +97,7 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
         ttlMap.clear();
     }
 
-    public boolean checkExpired(K key) {
+    public boolean checkExpired(@Nonnull K key) {
         Long keyTimestamp = timestamps.get(key);
         Long ttl = ttlMap.get(key);
 
@@ -164,9 +170,9 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
         }
 
         @SuppressWarnings("unchecked")
-        public <K1 extends K, V1 extends V> VariousTtlMapImpl<K1, V1> build() {
+        public <K1 extends K, V1 extends V> VariousTtlCacheImpl<K1, V1> build() {
             Builder<K1, V1> self = (Builder<K1, V1>) this;
-            return new VariousTtlMapImpl<>(self);
+            return new VariousTtlCacheImpl<>(self);
         }
     }
 }
