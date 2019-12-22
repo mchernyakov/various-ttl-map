@@ -4,13 +4,14 @@ import com.github.mchernyakov.variousttlcache.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
  * The Cache with various ttl for keys.
  * <p>
- * This implementation contains 3 maps :
+ * This implementation contains 2 maps :
  * 1) store (key + value) {@link VariousTtlCacheImpl#store},
  * 2) map for ttl (key + ttl (when keys will be expired)) {@link VariousTtlCacheImpl#ttlMap}.
  * <p>
@@ -39,9 +40,9 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
         mapCleaner = BackgroundMapCleaner.Builder
                 .newBuilder()
-                .setPoolSize(builder.clearPoolSize)
+                .setPoolSize(builder.cleaningPoolSize)
                 .setDelayTime(builder.delayMillis)
-                .setNumKeyCheck(builder.numCheck)
+                .setNumKeyCheck(builder.numCleaningAttemptsPerSession)
                 .setPercentWaterMark(builder.waterMarkPercent)
                 .build(this);
 
@@ -96,7 +97,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
         return ttl == null || System.nanoTime() > ttl;
     }
 
-    ConcurrentHashMap<K, V> getStore() {
+    Map<K, V> getStore() {
         return store;
     }
 
@@ -123,10 +124,10 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     public static final class Builder<K, V> {
         long defaultTtl;
-        int clearPoolSize = 1;
-        int numCheck;
+        int cleaningPoolSize = 1;
+        int numCleaningAttemptsPerSession;
         int waterMarkPercent;
-        int delayMillis;
+        int delayMillis = 1000;
 
         private Builder() {
         }
@@ -140,13 +141,13 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
             return this;
         }
 
-        public Builder<K, V> setClearPoolSize(int clearPoolSize) {
-            this.clearPoolSize = clearPoolSize;
+        public Builder<K, V> setCleaningPoolSize(int cleaningPoolSize) {
+            this.cleaningPoolSize = cleaningPoolSize;
             return this;
         }
 
-        public Builder<K, V> setNumCheck(int numCheck) {
-            this.numCheck = numCheck;
+        public Builder<K, V> setNumCleaningAttemptsPerSession(int numCleaningAttemptsPerSession) {
+            this.numCleaningAttemptsPerSession = numCleaningAttemptsPerSession;
             return this;
         }
 

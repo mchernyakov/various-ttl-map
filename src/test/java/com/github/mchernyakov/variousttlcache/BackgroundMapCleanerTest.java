@@ -16,8 +16,8 @@ public class BackgroundMapCleanerTest {
     public void setUp() throws Exception {
         mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
-                .setClearPoolSize(1)
-                .setNumCheck(20)
+                .setCleaningPoolSize(1)
+                .setNumCleaningAttemptsPerSession(20)
                 .setWaterMarkPercent(10)
                 .setDelayMillis(100)
                 .build();
@@ -54,10 +54,10 @@ public class BackgroundMapCleanerTest {
 
     @Test
     public void basicTest2() throws Exception {
-        VariousTtlCacheImpl<String, String> mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
+        VariousTtlCache<String, String> mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
-                .setClearPoolSize(2)
-                .setNumCheck(250)
+                .setCleaningPoolSize(2)
+                .setNumCleaningAttemptsPerSession(250)
                 .setWaterMarkPercent(10)
                 .setDelayMillis(100)
                 .build();
