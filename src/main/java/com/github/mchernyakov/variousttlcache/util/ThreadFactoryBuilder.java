@@ -29,19 +29,6 @@ public final class ThreadFactoryBuilder {
         return this;
     }
 
-    public ThreadFactoryBuilder setUncaughtExceptionHandler(
-            Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
-        this.uncaughtExceptionHandler = Preconditions.checkNotNull(uncaughtExceptionHandler);
-        return this;
-    }
-
-
-    public ThreadFactoryBuilder setThreadFactory(ThreadFactory backingThreadFactory) {
-        this.backingThreadFactory = Preconditions.checkNotNull(backingThreadFactory);
-        return this;
-    }
-
-
     public ThreadFactory build() {
         return doBuild(this);
     }

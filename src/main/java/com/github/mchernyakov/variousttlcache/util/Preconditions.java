@@ -4,6 +4,10 @@ package com.github.mchernyakov.variousttlcache.util;
 import org.jetbrains.annotations.NotNull;
 
 public final class Preconditions {
+    private Preconditions() {
+
+    }
+
     public static void checkArgument(boolean expression) {
         if (!expression) {
             throw new IllegalArgumentException();

@@ -12,6 +12,8 @@ And has two variants of cleaning:
 1) passive via _get(K)_,
 2) active via _BackgroundCleaner_.
 
+All API methods are thread-safe.
+
 ### Install
 
 ##### Maven Central
@@ -51,4 +53,6 @@ Code:
 
 ## Roadmap
 - [ ] maven central,
-- [ ] options for primitive map for ttl (several engines).
+- [ ] options for primitive map for ttl (several engines),
+- [ ] async API,
+- [ ] jmh tests.
