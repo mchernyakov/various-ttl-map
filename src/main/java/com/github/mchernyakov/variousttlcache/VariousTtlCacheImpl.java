@@ -1,5 +1,6 @@
 package com.github.mchernyakov.variousttlcache;
 
+import com.github.mchernyakov.variousttlcache.applied.PrimitiveMapWrapper;
 import com.github.mchernyakov.variousttlcache.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     private final ConcurrentHashMap<K, V> store;
-    private final ConcurrentHashMap<K, Long> ttlMap;
+    private final PrimitiveMapWrapper ttlMap;
     private final BackgroundMapCleaner<K, V> mapCleaner;
 
     private final long defaultTtl;
@@ -36,7 +37,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
         defaultTtl = timeUnit.toNanos(builder.defaultTtl);
         store = new ConcurrentHashMap<>();
-        ttlMap = new ConcurrentHashMap<>();
+        ttlMap = new PrimitiveMapWrapper();
 
         mapCleaner = BackgroundMapCleaner.Builder
                 .newBuilder()
@@ -64,13 +65,13 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public V put(@NotNull K key, V value) {
-        ttlMap.put(key, System.nanoTime() + defaultTtl);
+        ttlMap.put(key.hashCode(), System.nanoTime() + defaultTtl);
         return store.put(key, value);
     }
 
     @Override
     public V put(@NotNull K key, V value, long ttl) {
-        ttlMap.put(key, System.nanoTime() + timeUnit.toNanos(ttl));
+        ttlMap.put(key.hashCode(), System.nanoTime() + timeUnit.toNanos(ttl));
         return store.put(key, value);
     }
 
@@ -81,7 +82,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public V remove(@NotNull K key) {
-        ttlMap.remove(key);
+        ttlMap.remove(key.hashCode());
         return store.remove(key);
     }
 
@@ -92,9 +93,9 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     }
 
     public boolean checkExpired(@NotNull K key) {
-        Long ttl = ttlMap.get(key);
+        long ttl = ttlMap.get(key.hashCode());
 
-        return ttl == null || System.nanoTime() > ttl;
+        return System.nanoTime() > ttl;
     }
 
     Map<K, V> getStore() {

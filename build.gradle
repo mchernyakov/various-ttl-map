@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.0'
     compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
