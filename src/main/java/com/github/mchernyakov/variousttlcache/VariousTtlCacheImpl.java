@@ -53,13 +53,11 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     @Override
     @Nullable
     public V get(K key) {
-        V value = this.store.get(key);
-
-        if (value != null && checkExpired(key)) {
+        if (checkExpired(key)) {
             remove(key);
             return null;
         } else {
-            return value;
+            return this.store.get(key);
         }
     }
 
@@ -114,7 +112,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public String toString() {
-        return "VariousTtlMapClassic{" +
+        return "VariousTtlCacheImpl{" +
                 "store=" + store +
                 ", ttlMap=" + ttlMap +
                 ", mapCleaner=" + mapCleaner +
