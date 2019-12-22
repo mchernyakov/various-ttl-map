@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * This implementation contains 3 maps :
  * 1) store (key + value) {@link VariousTtlCacheImpl#store},
- * 2) map for timestamps (key + timestamps) {@link VariousTtlCacheImpl#timestamps},
- * 3) map for ttl (key + ttl) {@link VariousTtlCacheImpl#ttlMap}.
+ * 2) map for ttl (key + ttl (when keys will be expired)) {@link VariousTtlCacheImpl#ttlMap}.
  * <p>
  * This implementation has two variants of cleaning:
  * 1) passive via {@link VariousTtlCacheImpl#get(K)},
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     private final ConcurrentHashMap<K, V> store;
-    private final ConcurrentHashMap<K, Long> timestamps;
     private final ConcurrentHashMap<K, Long> ttlMap;
     private final BackgroundMapCleaner<K, V> mapCleaner;
 
@@ -38,7 +36,6 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
         defaultTtl = timeUnit.toNanos(builder.defaultTtl);
         store = new ConcurrentHashMap<>();
         ttlMap = new ConcurrentHashMap<>();
-        timestamps = new ConcurrentHashMap<>();
 
         mapCleaner = BackgroundMapCleaner.Builder
                 .newBuilder()
@@ -66,15 +63,13 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public V put(@Nonnull K key, V value) {
-        timestamps.put(key, System.nanoTime());
-        ttlMap.put(key, defaultTtl);
+        ttlMap.put(key, System.nanoTime() + defaultTtl);
         return store.put(key, value);
     }
 
     @Override
     public V put(@Nonnull K key, V value, long ttl) {
-        timestamps.put(key, System.nanoTime());
-        ttlMap.put(key, timeUnit.toNanos(ttl));
+        ttlMap.put(key, System.nanoTime() + timeUnit.toNanos(ttl));
         return store.put(key, value);
     }
 
@@ -85,23 +80,20 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public V remove(@Nonnull K key) {
-        timestamps.remove(key);
         ttlMap.remove(key);
         return store.remove(key);
     }
 
     @Override
     public void clear() {
-        timestamps.clear();
         store.clear();
         ttlMap.clear();
     }
 
     public boolean checkExpired(@Nonnull K key) {
-        Long keyTimestamp = timestamps.get(key);
         Long ttl = ttlMap.get(key);
 
-        return keyTimestamp == null || ttl == null || (System.nanoTime() - keyTimestamp) > ttl;
+        return ttl == null || System.nanoTime() > ttl;
     }
 
     public ConcurrentHashMap<K, V> getStore() {
@@ -122,7 +114,6 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     public String toString() {
         return "VariousTtlMapClassic{" +
                 "store=" + store +
-                ", timestamps=" + timestamps +
                 ", ttlMap=" + ttlMap +
                 ", mapCleaner=" + mapCleaner +
                 ", defaultTtl=" + defaultTtl +
@@ -132,7 +123,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     public static final class Builder<K, V> {
         long defaultTtl;
-        int clearPoolSize;
+        int clearPoolSize = 1;
         int numCheck;
         int waterMarkPercent;
         int delayMillis;
