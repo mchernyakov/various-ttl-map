@@ -1,5 +1,7 @@
 # Various time to live cache
 
+[![Build Status](https://travis-ci.com/mchernyakov/various-ttl-cache.svg?branch=master)](https://travis-ci.com/mchernyakov/various-ttl-cache)
+
 ## Description
 
 Tiny library with various ttl cache. Based on Redis expire [algorithm](https://redis.io/commands/expire).
@@ -14,7 +16,7 @@ And has two variants of cleaning:
 
 All API methods are thread-safe.
 
-### Install
+## Install
 
 ##### Maven Central
 
@@ -22,33 +24,34 @@ _TODO_
 
 ## Usage
 ### Properties
+Builder properties:
 
- `defaultTtl` - default ttl (seconds), 
+`defaultTtl` - default ttl (seconds), 
  
- `cleaningPoolSize` - cleaning pool size (default = 1),
+`cleaningPoolSize` - cleaning pool size (default = 1),
  
- `numCleaningAttemptsPerSession` - how many attempts cleaner can do in single session,
+`numCleaningAttemptsPerSession` - how many attempts cleaner can do in single session,
  
- `waterMarkPercent` - percent when the cleaner have to start another session 
- (basically it means that we have a lot of expired keys, see [algo](https://redis.io/commands/expire#how-redis-expires-keys)),
+`waterMarkPercent` - percent when the cleaner have to start another session 
+(basically it means that we have a lot of expired keys, see [algo](https://redis.io/commands/expire#how-redis-expires-keys)),
  
- `delayMillis`- interval between cleaning sessions (millis, default = 1000).
+`delayMillis`- interval between cleaning sessions (millis, default = 1000).
 
-Code:
+#### In code
 ```java
-        VariousTtlCache<String, String> map = VariousTtlCacheImpl.Builder.newBuilder()
-                .setDefaultTtl(2)
-                .setCleaningPoolSize(2)
-                .setNumCleaningAttemptsPerSession(250)
-                .setWaterMarkPercent(10)
-                .setDelayMillis(100)
-                .build();
+    VariousTtlCache<String, String> map = VariousTtlCacheImpl.Builder.newBuilder()
+            .setDefaultTtl(2)
+            .setCleaningPoolSize(2)
+            .setNumCleaningAttemptsPerSession(250)
+            .setWaterMarkPercent(10)
+            .setDelayMillis(100)
+            .build();
 
-        int attempts = 10_000;
-        Random random = new Random();
+    int attempts = 10_000;
+    Random random = new Random();
         for (int i = 0; i < attempts; i++) {
-            map.put("key_" + random.nextInt(), "val", random.nextInt(5));
-        }
+        map.put("key_" + random.nextInt(), "val", random.nextInt(5));
+    }
 ```
 
 ## Roadmap
