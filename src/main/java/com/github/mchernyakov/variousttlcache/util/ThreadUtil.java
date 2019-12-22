@@ -1,7 +1,5 @@
 package com.github.mchernyakov.variousttlcache.util;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;

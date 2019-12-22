@@ -1,9 +1,9 @@
 package com.github.mchernyakov.variousttlcache;
 
-import com.google.common.base.Preconditions;
+import com.github.mchernyakov.variousttlcache.util.Preconditions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -62,13 +62,13 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     }
 
     @Override
-    public V put(@Nonnull K key, V value) {
+    public V put(@NotNull K key, V value) {
         ttlMap.put(key, System.nanoTime() + defaultTtl);
         return store.put(key, value);
     }
 
     @Override
-    public V put(@Nonnull K key, V value, long ttl) {
+    public V put(@NotNull K key, V value, long ttl) {
         ttlMap.put(key, System.nanoTime() + timeUnit.toNanos(ttl));
         return store.put(key, value);
     }
@@ -79,7 +79,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     }
 
     @Override
-    public V remove(@Nonnull K key) {
+    public V remove(@NotNull K key) {
         ttlMap.remove(key);
         return store.remove(key);
     }
@@ -90,17 +90,17 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
         ttlMap.clear();
     }
 
-    public boolean checkExpired(@Nonnull K key) {
+    public boolean checkExpired(@NotNull K key) {
         Long ttl = ttlMap.get(key);
 
         return ttl == null || System.nanoTime() > ttl;
     }
 
-    public ConcurrentHashMap<K, V> getStore() {
+    ConcurrentHashMap<K, V> getStore() {
         return store;
     }
 
-    public BackgroundMapCleaner<K, V> getMapCleaner() {
+    BackgroundMapCleaner<K, V> getMapCleaner() {
         return mapCleaner;
     }
 

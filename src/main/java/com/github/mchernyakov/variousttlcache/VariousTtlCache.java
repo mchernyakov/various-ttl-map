@@ -1,18 +1,18 @@
 package com.github.mchernyakov.variousttlcache;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface VariousTtlCache<K, V> {
 
     @Nullable
     V get(K key);
 
-    V put(@Nonnull K key, V value);
+    V put(@NotNull K key, V value);
 
-    V put(@Nonnull K key, V value, long ttl);
+    V put(@NotNull K key, V value, long ttl);
 
-    V remove(@Nonnull K key);
+    V remove(@NotNull K key);
 
     void clear();
 

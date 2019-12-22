@@ -1,11 +1,11 @@
 package com.github.mchernyakov.variousttlcache;
 
+import com.github.mchernyakov.variousttlcache.util.Preconditions;
 import com.github.mchernyakov.variousttlcache.util.ThreadUtil;
-import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -176,7 +176,7 @@ class BackgroundMapCleaner<K, V> {
 
         @SuppressWarnings("unchecked")
         public <K1 extends K, V1 extends V>
-        BackgroundMapCleaner<K1, V1> build(@Nonnull VariousTtlCacheImpl<K1, V1> map) {
+        BackgroundMapCleaner<K1, V1> build(@NotNull VariousTtlCacheImpl<K1, V1> map) {
             Preconditions.checkNotNull(map);
             Builder<K1, V1> self = (Builder<K1, V1>) this;
             return new BackgroundMapCleaner<>(map, self);
