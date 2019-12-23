@@ -1,7 +1,7 @@
-package com.github.mchernyakov.variousttlcache;
+package com.github.mchernyakov.variousttlmap;
 
-import com.github.mchernyakov.variousttlcache.applied.PrimitiveMapWrapper;
-import com.github.mchernyakov.variousttlcache.util.Preconditions;
+import com.github.mchernyakov.variousttlmap.applied.PrimitiveMapWrapper;
+import com.github.mchernyakov.variousttlmap.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,20 +10,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The Cache with various ttl for keys.
+ * The Map with various ttl for keys.
  * <p>
  * This implementation contains 2 maps :
- * 1) store (key + value) {@link VariousTtlCacheImpl#store},
- * 2) map for ttl (key + ttl (when keys will be expired)) {@link VariousTtlCacheImpl#ttlMap}.
+ * 1) store (key + value) {@link VariousTtlMapImpl#store},
+ * 2) map for ttl (key + ttl (when keys will be expired)) {@link VariousTtlMapImpl#ttlMap}.
  * <p>
  * This implementation has two variants of cleaning:
- * 1) passive via {@link VariousTtlCacheImpl#get(K)},
+ * 1) passive via {@link VariousTtlMapImpl#get(K)},
  * 2) active via {@link BackgroundMapCleaner}.
  *
  * @param <K> key
  * @param <V> value
  */
-public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
+public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
 
     private final ConcurrentHashMap<K, V> store;
     private final PrimitiveMapWrapper ttlMap;
@@ -32,7 +32,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
     private final long defaultTtl;
     private final TimeUnit timeUnit = TimeUnit.SECONDS;
 
-    private VariousTtlCacheImpl(Builder<K, V> builder) {
+    private VariousTtlMapImpl(Builder<K, V> builder) {
         Preconditions.checkArgument(builder.defaultTtl > 0);
 
         defaultTtl = timeUnit.toNanos(builder.defaultTtl);
@@ -112,7 +112,7 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
 
     @Override
     public String toString() {
-        return "VariousTtlCacheImpl{" +
+        return "VariousTtlMapImpl{" +
                 "store=" + store +
                 ", ttlMap=" + ttlMap +
                 ", mapCleaner=" + mapCleaner +
@@ -161,9 +161,9 @@ public class VariousTtlCacheImpl<K, V> implements VariousTtlCache<K, V> {
         }
 
         @SuppressWarnings("unchecked")
-        public <K1 extends K, V1 extends V> VariousTtlCacheImpl<K1, V1> build() {
+        public <K1 extends K, V1 extends V> VariousTtlMapImpl<K1, V1> build() {
             Builder<K1, V1> self = (Builder<K1, V1>) this;
-            return new VariousTtlCacheImpl<>(self);
+            return new VariousTtlMapImpl<>(self);
         }
     }
 }

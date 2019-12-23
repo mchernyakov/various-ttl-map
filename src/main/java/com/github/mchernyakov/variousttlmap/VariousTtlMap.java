@@ -1,9 +1,9 @@
-package com.github.mchernyakov.variousttlcache;
+package com.github.mchernyakov.variousttlmap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface VariousTtlCache<K, V> {
+public interface VariousTtlMap<K, V> {
 
     @Nullable
     V get(K key);

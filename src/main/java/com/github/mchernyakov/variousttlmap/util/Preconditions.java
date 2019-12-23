@@ -1,4 +1,4 @@
-package com.github.mchernyakov.variousttlcache.util;
+package com.github.mchernyakov.variousttlmap.util;
 
 
 import org.jetbrains.annotations.NotNull;

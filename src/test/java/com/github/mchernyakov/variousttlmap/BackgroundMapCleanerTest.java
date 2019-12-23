@@ -1,4 +1,4 @@
-package com.github.mchernyakov.variousttlcache;
+package com.github.mchernyakov.variousttlmap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -9,12 +9,12 @@ import java.util.Random;
 
 public class BackgroundMapCleanerTest {
 
-    private VariousTtlCacheImpl<String, String> mapClassic;
+    private VariousTtlMapImpl<String, String> mapClassic;
     private BackgroundMapCleaner<String, String> mapCleaner;
 
     @Before
     public void setUp() throws Exception {
-        mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
+        mapClassic = VariousTtlMapImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
                 .setCleaningPoolSize(1)
                 .setNumCleaningAttemptsPerSession(20)
@@ -54,7 +54,7 @@ public class BackgroundMapCleanerTest {
 
     @Test
     public void basicTest2() throws Exception {
-        VariousTtlCache<String, String> mapClassic = VariousTtlCacheImpl.Builder.newBuilder()
+        VariousTtlMap<String, String> mapClassic = VariousTtlMapImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
                 .setCleaningPoolSize(2)
                 .setNumCleaningAttemptsPerSession(250)

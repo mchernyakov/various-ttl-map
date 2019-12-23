@@ -1,11 +1,11 @@
-package com.github.mchernyakov.variousttlcache;
+package com.github.mchernyakov.variousttlmap;
 
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class VariousTtlCacheImplTest {
+public class VariousTtlMapImplTest {
 
     @Test(expected = Exception.class)
     public void conditionTest() throws Exception {

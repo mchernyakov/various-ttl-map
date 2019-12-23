@@ -1,10 +1,10 @@
-# Various time to live cache
+# Various time to live map
 
-[![Build Status](https://travis-ci.com/mchernyakov/various-ttl-cache.svg?branch=master)](https://travis-ci.com/mchernyakov/various-ttl-cache)
+[![Build Status](https://travis-ci.com/mchernyakov/various-ttl-map.svg?branch=master)](https://travis-ci.com/mchernyakov/various-ttl-map)
 
 ## Description
 
-Tiny library with various ttl cache. Based on Redis expire [algorithm](https://redis.io/commands/expire).
+Tiny library with various ttl map. Based on Redis expire [algorithm](https://redis.io/commands/expire).
 
 The implementation contains two maps: 
 1) keys and values,
@@ -39,7 +39,7 @@ Builder properties:
 
 #### In code
 ```java
-    VariousTtlCache<String, String> map = VariousTtlCacheImpl.Builder.newBuilder()
+    VariousTtlMap<String, String> map = VariousTtlMapImpl.Builder.newBuilder()
             .setDefaultTtl(2)
             .setCleaningPoolSize(2)
             .setNumCleaningAttemptsPerSession(250)

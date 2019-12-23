@@ -1,4 +1,4 @@
-package com.github.mchernyakov.variousttlcache.applied;
+package com.github.mchernyakov.variousttlmap.applied;
 
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 

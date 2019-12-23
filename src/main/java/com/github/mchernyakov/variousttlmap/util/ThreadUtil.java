@@ -1,4 +1,4 @@
-package com.github.mchernyakov.variousttlcache.util;
+package com.github.mchernyakov.variousttlmap.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
