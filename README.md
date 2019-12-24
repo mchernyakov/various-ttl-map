@@ -1,10 +1,11 @@
 # Various time to live map
 
 [![Build Status](https://travis-ci.com/mchernyakov/various-ttl-map.svg?branch=master)](https://travis-ci.com/mchernyakov/various-ttl-map)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mchernyakov/various-ttl-map/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mchernyakov/various-ttl-map/)
 
 ## Description
 
-Tiny library with various ttl map. It is cache with various ttl based on Redis expire [algorithm](https://redis.io/commands/expire)
+Tiny library with various ttl map. It is cache with various ttl based on Redis [expire algorithm](https://redis.io/commands/expire)
 and ConcurrentHashMap.
 
 The implementation contains two maps: 
@@ -15,13 +16,21 @@ And has two variants of cleaning:
 1) passive via _get(K)_,
 2) active via _BackgroundCleaner_.
 
-All API methods are thread-safe.
-
 ## Install
 
-##### Maven Central
+#### Maven
+```xml
+<dependency>
+  <groupId>com.github.mchernyakov</groupId>
+  <artifactId>various-ttl-map</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
 
-_TODO_
+#### Gradle
+```groovy
+compile group: 'com.github.mchernyakov', name: 'various-ttl-map', version: '0.0.1'
+```
 
 ## Usage
 ### Properties
@@ -56,7 +65,6 @@ Builder properties:
 ```
 
 ## Roadmap
-- [ ] maven central,
 - [ ] options for primitive map for ttl (several engines),
 - [ ] async API,
 - [ ] jmh tests.
