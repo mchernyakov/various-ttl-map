@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * 2) map for ttl (key + ttl (when keys will be expired)) {@link VariousTtlMapImpl#ttlMap}.
  * <p>
  * This implementation has two variants of cleaning:
- * 1) passive via {@link VariousTtlMapImpl#get(K)},
+ * 1) passive via {@link VariousTtlMapImpl#get(Object)},
  * 2) active via {@link BackgroundMapCleaner}.
  *
  * @param <K> key

@@ -1,9 +1,19 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.8.0'
+    }
 }
 
+apply plugin: 'java'
+apply plugin: "com.vanniktech.maven.publish"
+
 group 'com.github.mchernyakov'
-version '1.0-SNAPSHOT'
+version '0.0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -21,6 +31,14 @@ dependencies {
     testCompile group: 'org.awaitility', name: 'awaitility', version: '4.0.1'
 }
 
-jar {
-
+mavenPublish {
+    targets {
+        uploadArchives {
+            releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            repositoryUsername = nexusUsername
+            repositoryPassword = nexusPassword
+            signing = true
+        }
+    }
 }
