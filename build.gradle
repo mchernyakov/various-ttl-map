@@ -31,14 +31,19 @@ dependencies {
     testCompile group: 'org.awaitility', name: 'awaitility', version: '4.0.1'
 }
 
-mavenPublish {
-    targets {
-        uploadArchives {
-            releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            repositoryUsername = nexusUsername
-            repositoryPassword = nexusPassword
-            signing = true
+
+tasks.register("release") {
+
+    // ./gradlew release uploadArchives
+    mavenPublish {
+        targets {
+            uploadArchives {
+                releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                repositoryUsername = nexusUsername
+                repositoryPassword = nexusPassword
+                signing = true
+            }
         }
     }
 }
