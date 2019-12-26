@@ -1,11 +1,11 @@
-# Various time to live map
+# Map with various time to live of keys
 
 [![Build Status](https://travis-ci.com/mchernyakov/various-ttl-map.svg?branch=master)](https://travis-ci.com/mchernyakov/various-ttl-map)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mchernyakov/various-ttl-map/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mchernyakov/various-ttl-map/)
 
 ## Description
 
-Tiny library with various ttl map. It is cache with various ttl based on Redis [expire algorithm](https://redis.io/commands/expire)
+It is cache (map) with various ttl of keys based on Redis [expire algorithm](https://redis.io/commands/expire)
 and ConcurrentHashMap.
 
 The implementation contains two maps: 
