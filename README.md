@@ -42,7 +42,7 @@ Builder properties:
  
 `numCleaningAttemptsPerSession` - how many attempts cleaner can do in single session,
  
-`waterMarkPercent` - percent when the cleaner have to start another session 
+`waterMarkPercent` - percent when the cleaner has to start another session 
 (basically it means that we have a lot of expired keys, see [algo](https://redis.io/commands/expire#how-redis-expires-keys)),
  
 `delayMillis`- interval between cleaning sessions (millis, default = 1000).

@@ -124,8 +124,8 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     public static final class Builder<K, V> {
         long defaultTtl;
         int cleaningPoolSize = 1;
-        int numCleaningAttemptsPerSession;
-        int waterMarkPercent;
+        int numCleaningAttemptsPerSession = 10;
+        int waterMarkPercent = 10;
         int delayMillis = 1000;
 
         private Builder() {

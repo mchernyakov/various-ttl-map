@@ -68,7 +68,7 @@ class BackgroundMapCleaner<K, V> {
         return () -> {
             try {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Start clean");
+                    logger.debug("Start cleaning");
                 }
 
                 // get a array of keys
@@ -102,7 +102,8 @@ class BackgroundMapCleaner<K, V> {
     private int tryRemoveKeys(List<K> keys) {
         int numAttempt = 0;
         int numRemovedKeys = 0;
-        while (processCondition(numAttempt, keys.size())) {
+        int size = keys.size();
+        while (processCondition(numAttempt, size)) {
             if (checkRandomKey(keys)) {
                 numRemovedKeys++;
             }

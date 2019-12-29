@@ -31,7 +31,6 @@ dependencies {
     testCompile group: 'org.awaitility', name: 'awaitility', version: '4.0.1'
 }
 
-
 tasks.register("release") {
 
     // ./gradlew release uploadArchives
