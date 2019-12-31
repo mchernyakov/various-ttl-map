@@ -2,13 +2,23 @@ package com.github.mchernyakov.variousttlmap;
 
 import com.github.mchernyakov.variousttlmap.util.Preconditions;
 import com.github.mchernyakov.variousttlmap.util.ThreadUtil;
+import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * Map cleaner.
@@ -38,6 +48,12 @@ class BackgroundMapCleaner<K, V> {
     private final int poolSize;
     private final int numKeyCheck;
     private final int percentWaterMark;
+    private final boolean isMultiThreadCleaner;
+
+    private final BlockingQueue<List<K>> blockingQueue;
+
+    private Phaser phaser;
+    private volatile boolean isInitChunks;
 
     private BackgroundMapCleaner(VariousTtlMapImpl<K, V> variousTtlMap, Builder<K, V> builder) {
         Preconditions.checkArgument(builder.poolSize > 0);
@@ -56,9 +72,16 @@ class BackgroundMapCleaner<K, V> {
 
         ThreadFactory factory = ThreadUtil.threadFactory("map-cleaner");
         executorService = Executors.newScheduledThreadPool(poolSize, factory);
+        isMultiThreadCleaner = poolSize > 1;
+
+        blockingQueue = new ArrayBlockingQueue<>(poolSize);
     }
 
     public void startCleaners() {
+        if (isMultiThreadCleaner) {
+            phaser = new Phaser();
+        }
+
         for (int i = 0; i < poolSize; i++) {
             executorService.scheduleAtFixedRate(task(), 0, delayTime, TimeUnit.MILLISECONDS);
         }
@@ -67,34 +90,96 @@ class BackgroundMapCleaner<K, V> {
     private Runnable task() {
         return () -> {
             try {
+                if (isMultiThreadCleaner) {
+                    phaser.register();
+                }
+
                 if (logger.isDebugEnabled()) {
                     logger.debug("Start cleaning");
                 }
 
                 // get a array of keys
-                List<K> keysAsArray = new ArrayList<>(map.getStore().keySet());
-                int size = keysAsArray.size();
-                if (size == 0) {
-                    return;
-                }
+                List<K> keysAsArray;
+                while ((keysAsArray = getKeys()) != null) {
 
-                // check and delete
-                int numRemovedKeys;
-                do {
-                    numRemovedKeys = tryRemoveKeys(keysAsArray);
-                } while (checkExcessWaterMark(size, numRemovedKeys));
+                    int size = keysAsArray.size();
+                    if (size == 0) {
+                        return;
+                    }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Finish clean. num done {}, start size {}", numRemovedKeys, size);
+                    // check and delete
+                    int numRemovedKeys;
+                    do {
+                        numRemovedKeys = tryRemoveKeys(keysAsArray);
+                    } while (checkExcessWaterMark(size, numRemovedKeys));
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Finish clean. num done {}, start size {}", numRemovedKeys, size);
+                    }
                 }
             } catch (Exception e) {
                 logger.warn("Error while cleaning map", e);
                 throw new RuntimeException(e);
+            } finally {
+                if (isMultiThreadCleaner) {
+                    phaser.arriveAndDeregister();
+                    if (phaser.getArrivedParties() == 0) {
+                        isInitChunks = false;
+                    }
+                }
             }
         };
     }
 
-    public boolean checkExcessWaterMark(int size, int numDone) {
+    @VisibleForTesting
+    List<K> getKeys() {
+        if (!isMultiThreadCleaner) { // single-thread-pool case
+            //TODO expensive operation
+            offerChunk(new ArrayList<>(map.getStore().keySet()));
+        } else {
+            if (!isInitChunks) {
+                synchronized (this) {
+                    if (!isInitChunks) {
+                        initAndPutChunks();
+                        isInitChunks = true;
+                    }
+                }
+            }
+        }
+
+        return blockingQueue.poll();
+    }
+
+    private void initAndPutChunks() {
+        Set<K> keys = map.getStore().keySet();
+        List<List<K>> chunks = buildChunks(keys);
+        chunks.forEach(this::offerChunk);
+    }
+
+    @VisibleForTesting
+    List<List<K>> buildChunks(Set<K> keys) {
+        List<List<K>> chunks = new ArrayList<>();
+        IntStream.range(0, poolSize).forEach(i -> chunks.add(new ArrayList<>()));
+
+        int counter = 0;
+        for (K key : keys) {
+            int index = counter % poolSize;
+            chunks.get(index).add(key);
+            counter++;
+        }
+
+        return chunks;
+    }
+
+    private void offerChunk(List<K> chunk) {
+        boolean res = blockingQueue.offer(chunk);
+        if (!res) {
+            throw new IllegalStateException("queue capacity lower than chunk count");
+        }
+    }
+
+    @VisibleForTesting
+    boolean checkExcessWaterMark(int size, int numDone) {
         double percent = (HUNDRED_PERCENT * numDone) / (float) size;
         return percent > percentWaterMark && percent < RED_LINE_PERCENT;
     }

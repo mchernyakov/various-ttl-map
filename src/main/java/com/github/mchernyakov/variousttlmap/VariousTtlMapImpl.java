@@ -68,8 +68,8 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     }
 
     @Override
-    public V put(@NotNull K key, V value, long ttl) {
-        ttlMap.put(key.hashCode(), System.nanoTime() + timeUnit.toNanos(ttl));
+    public V put(@NotNull K key, V value, long ttlSeconds) {
+        ttlMap.put(key.hashCode(), System.nanoTime() + timeUnit.toNanos(ttlSeconds));
         return store.put(key, value);
     }
 
@@ -108,6 +108,11 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
     public void shutdown() {
         mapCleaner.shutdown();
         clear();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return store.isEmpty();
     }
 
     @Override

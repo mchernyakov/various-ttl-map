@@ -19,4 +19,6 @@ public interface VariousTtlMap<K, V> {
     int size();
 
     void shutdown();
+
+    boolean isEmpty();
 }
