@@ -29,7 +29,7 @@ And has two variants of cleaning:
 
 #### Gradle
 ```groovy
-compile group: 'com.github.mchernyakov', name: 'various-ttl-map', version: '0.0.1'
+compile group: 'com.github.mchernyakov', name: 'various-ttl-map', version: '0.0.2'
 ```
 
 ## Usage
