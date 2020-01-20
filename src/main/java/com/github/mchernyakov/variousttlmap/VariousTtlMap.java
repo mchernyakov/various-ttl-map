@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 public interface VariousTtlMap<K, V> {
 
     @Nullable
-    V get(K key);
+    V get(@NotNull K key);
 
     V put(@NotNull K key, V value);
 

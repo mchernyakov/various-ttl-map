@@ -180,7 +180,7 @@ class BackgroundMapCleaner<K, V> {
 
     @VisibleForTesting
     boolean checkExcessWaterMark(int size, int numDone) {
-        double percent = (HUNDRED_PERCENT * numDone) / (float) size;
+        float percent = (HUNDRED_PERCENT * numDone) / (float) size;
         return percent > percentWaterMark && percent < RED_LINE_PERCENT;
     }
 
@@ -215,7 +215,7 @@ class BackgroundMapCleaner<K, V> {
         return false;
     }
 
-    private int getRandomIndex(int size) {
+    private static int getRandomIndex(int size) {
         if (size == 1) {
             return 0;
         }

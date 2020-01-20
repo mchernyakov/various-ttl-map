@@ -16,6 +16,8 @@ And has two variants of cleaning:
 1) passive via _get(K)_,
 2) active via _BackgroundCleaner_.
 
+The BackgroundCleaner contains thread pool which is responsible for cleaning map.
+
 ## Install
 
 #### Maven

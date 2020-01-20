@@ -52,7 +52,7 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
 
     @Override
     @Nullable
-    public V get(K key) {
+    public V get(@NotNull K key) {
         if (checkExpired(key)) {
             remove(key);
             return null;
