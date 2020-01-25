@@ -1,6 +1,7 @@
 package com.github.mchernyakov.variousttlmap;
 
 import com.github.mchernyakov.variousttlmap.applied.PrimitiveMapWrapper;
+import com.github.mchernyakov.variousttlmap.applied.cleaner.BackgroundMapCleaner;
 import com.github.mchernyakov.variousttlmap.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,11 +97,13 @@ public class VariousTtlMapImpl<K, V> implements VariousTtlMap<K, V> {
         return System.nanoTime() > ttl;
     }
 
-    Map<K, V> getStore() {
+    @Override
+    public Map<K, V> getStore() {
         return store;
     }
 
-    BackgroundMapCleaner<K, V> getMapCleaner() {
+    @Override
+    public BackgroundMapCleaner<K, V> getMapCleaner() {
         return mapCleaner;
     }
 

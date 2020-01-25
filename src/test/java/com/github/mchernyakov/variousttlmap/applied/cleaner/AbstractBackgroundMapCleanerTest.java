@@ -1,5 +1,7 @@
-package com.github.mchernyakov.variousttlmap;
+package com.github.mchernyakov.variousttlmap.applied.cleaner;
 
+import com.github.mchernyakov.variousttlmap.VariousTtlMap;
+import com.github.mchernyakov.variousttlmap.VariousTtlMapImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,14 +17,15 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-public class BackgroundMapCleanerTest {
+public class AbstractBackgroundMapCleanerTest {
 
     private static final int POOL_SIZE = 1;
 
     private VariousTtlMapImpl<String, String> ttlMap;
-    private BackgroundMapCleaner<String, String> mapCleaner;
+    private AbstractBackgroundMapCleaner<String, String> mapCleaner;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         ttlMap = VariousTtlMapImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
@@ -32,7 +35,7 @@ public class BackgroundMapCleanerTest {
                 .setDelayMillis(100)
                 .build();
 
-        mapCleaner = ttlMap.getMapCleaner();
+        mapCleaner = (AbstractBackgroundMapCleaner<String, String>) ttlMap.getMapCleaner();
     }
 
     @After
@@ -83,7 +86,7 @@ public class BackgroundMapCleanerTest {
                 .setDelayMillis(100)
                 .build();
 
-        BackgroundMapCleaner<String, String> backgroundMapCleaner = map.getMapCleaner();
+        MultiThreadMapCleaner<String, String> backgroundMapCleaner = (MultiThreadMapCleaner<String, String>) map.getMapCleaner();
 
         Set<String> set = new HashSet<>();
         for (int i = 0; i < 10; i++) {
@@ -109,7 +112,7 @@ public class BackgroundMapCleanerTest {
                 .setDelayMillis(100)
                 .build();
 
-        BackgroundMapCleaner<String, String> backgroundMapCleaner = map.getMapCleaner();
+        MultiThreadMapCleaner<String, String> backgroundMapCleaner = (MultiThreadMapCleaner<String, String>) map.getMapCleaner();
 
         Set<String> set = new HashSet<>();
         for (int i = 0; i < 11; i++) {

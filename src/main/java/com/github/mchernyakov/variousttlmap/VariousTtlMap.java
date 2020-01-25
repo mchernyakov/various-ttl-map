@@ -1,7 +1,10 @@
 package com.github.mchernyakov.variousttlmap;
 
+import com.github.mchernyakov.variousttlmap.applied.cleaner.BackgroundMapCleaner;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public interface VariousTtlMap<K, V> {
 
@@ -21,4 +24,8 @@ public interface VariousTtlMap<K, V> {
     void shutdown();
 
     boolean isEmpty();
+
+    Map<K, V> getStore();
+
+    BackgroundMapCleaner<K, V> getMapCleaner();
 }
