@@ -25,13 +25,13 @@ The BackgroundCleaner contains thread pool which is responsible for cleaning map
 <dependency>
   <groupId>com.github.mchernyakov</groupId>
   <artifactId>various-ttl-map</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 
 #### Gradle
 ```groovy
-compile group: 'com.github.mchernyakov', name: 'various-ttl-map', version: '0.0.2'
+compile group: 'com.github.mchernyakov', name: 'various-ttl-map', version: '0.0.3'
 ```
 
 ## Usage

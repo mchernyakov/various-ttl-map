@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: "com.vanniktech.maven.publish"
 
 group 'com.github.mchernyakov'
-version '0.0.3-SNAPSHOT'
+version '0.0.4-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
