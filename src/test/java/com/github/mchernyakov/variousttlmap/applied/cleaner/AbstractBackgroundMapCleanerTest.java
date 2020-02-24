@@ -25,7 +25,6 @@ public class AbstractBackgroundMapCleanerTest {
     private AbstractBackgroundMapCleaner<String, String> mapCleaner;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         ttlMap = VariousTtlMapImpl.Builder.newBuilder()
                 .setDefaultTtl(2)
