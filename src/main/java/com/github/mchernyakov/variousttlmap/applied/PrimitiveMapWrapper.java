@@ -2,8 +2,6 @@ package com.github.mchernyakov.variousttlmap.applied;
 
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -66,8 +64,21 @@ public class PrimitiveMapWrapper {
     }
 
     public void clear() {
-        Arrays.stream(primitiveMaps)
-                .filter(Objects::nonNull)
-                .forEach(Int2LongOpenHashMap::clear);
+        for (int i = 0; i < primitiveMaps.length; i++) {
+            clearMap(i);
+        }
+    }
+
+    private void clearMap(int i) {
+        Int2LongOpenHashMap map = primitiveMaps[i];
+        if (map != null) {
+            Lock lock = rwLocks[i].writeLock();
+            lock.lock();
+            try {
+                map.clear();
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 }
