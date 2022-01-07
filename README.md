@@ -5,18 +5,18 @@
 
 ## Description
 
-It is cache (map) with various ttl of keys based on Redis [expire algorithm](https://redis.io/commands/expire)
+I's a cache (map) with various ttl of keys based on Redis [expire algorithm](https://redis.io/commands/expire)
 and ConcurrentHashMap.
 
 The implementation contains two maps: 
 1) keys and values,
 2) keys and ttl.
 
-And has two variants of cleaning:
-1) passive via _get(K)_,
-2) active via _BackgroundCleaner_.
+And has tw cleaning modes:
+1) *passive* via _get(K)_,
+2) *active* via _BackgroundCleaner_.
 
-The BackgroundCleaner contains thread pool which is responsible for cleaning map.
+The BackgroundCleaner contains a thread pool, which is responsible for cleaning the map.
 
 ## Install
 
@@ -45,7 +45,7 @@ Builder properties:
 `numCleaningAttemptsPerSession` - how many attempts cleaner can do in single session,
  
 `waterMarkPercent` - percent when the cleaner has to start another session 
-(basically it means that we have a lot of expired keys, see [algo](https://redis.io/commands/expire#how-redis-expires-keys)),
+(basically, it means that we have a lot of expired keys, see [algo](https://redis.io/commands/expire#how-redis-expires-keys)),
  
 `delayMillis`- interval between cleaning sessions (millis, default = 1000).
 
@@ -67,6 +67,7 @@ Builder properties:
 ```
 
 ## Roadmap
+- [ ] size of the cache,
 - [ ] options for primitive map for ttl (several engines),
 - [ ] async API,
 - [ ] jmh tests.
